@@ -151,7 +151,10 @@ else:
         @AudioSink.listener()
         def on_voice_member_disconnect(self, member: Member, ssrc: Optional[int]) -> None:
             if member is not None:
-                self._drop(member.id)
+                try:
+                    self._drop(member.id)
+                except KeyError as e:
+                    log.warning('Could not drop member. Key not found')
 
         def cleanup(self) -> None:
             for user_id in tuple(self._stream_data.keys()):
